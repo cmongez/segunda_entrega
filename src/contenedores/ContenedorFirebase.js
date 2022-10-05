@@ -12,6 +12,7 @@ const db = admin.firestore();
 class ContenedorFirebase {
   constructor(nameCollection) {
     this.query = db.collection(nameCollection);
+    this.contador = 1;
   }
 
   async list() {
@@ -45,9 +46,12 @@ class ContenedorFirebase {
 
   async save(obj) {
     try {
-      const saved = await this.query.add(obj);
+      obj.id = this.contador;
+      const id = String(obj.id);
+      const saved = await this.query.doc(id).set(obj);
+      this.contador++;
       console.log('Elemento guardado id:', saved.id);
-      return { ...obj, id: saved.id };
+      return { ...obj };
     } catch (error) {
       console.log(error);
     }
@@ -74,9 +78,9 @@ class ContenedorFirebase {
   }
 }
 
-const contenedor1 = new ContenedorFirebase('carrito');
+// const contenedor1 = new ContenedorFirebase('carrito');
 
-const id = await contenedor1.getById('1KZXCuOUFXrIxaQb9A1H');
+// const id = await contenedor1.getById('1KZXCuOUFXrIxaQb9A1H');
 
 // const producto1 = await contenedor1.save({
 //   name: 'Mundo',
