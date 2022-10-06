@@ -11,7 +11,7 @@ import {
 
 const app = express();
 
-//--------------------------------------------
+//-------------------------------------------
 // permisos de administrador
 
 const esAdmin = true;
@@ -108,8 +108,8 @@ carritosRouter.delete('/:id/productos/:idProd', async (req, res) => {
   });
 });
 
-//--------------------------------------------
-// configuro el servidor
+//----------------------------------------
+// configuro el servidorr
 // servidor
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
