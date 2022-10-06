@@ -108,7 +108,7 @@ carritosRouter.delete('/:id/productos/:idProd', async (req, res) => {
   });
 });
 
-//--------------------------------------------
+//----------------------------------------
 // configuro el servidor
 // servidor
 app.use(express.json());
