@@ -11,7 +11,7 @@ import {
 
 const app = express();
 
-//--------------------------------------------
+//-------------------------------------------
 // permisos de administrador
 
 const esAdmin = true;
