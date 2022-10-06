@@ -1,67 +1,71 @@
-import { promises as fs } from 'fs';
-
-let array = [];
+const { promises: fs } = require('fs');
 
 class ContenedorArchivo {
-  constructor() {
-    this.nombreArchivo = 'archivos';
+  constructor(ruta) {
+    this.ruta = ruta;
   }
-
-  async save(obj) {
-    try {
-      array = await this.getAll();
-      array = [...array, obj];
-      await fs.writeFile(
-        './' + this.nombreArchivo + '.txt',
-        JSON.stringify(array) + '\n'
-      );
-    } catch (error) {
-      console.log('error en Save');
-    }
-  }
-
-  async getById(id) {
-    try {
-      const producto = await this.getAll();
-      const productsById = producto.find((p) => p.id === id);
-      return productsById;
-    } catch (error) {
-      console.log('error en getById');
+  //optimizar los metodos (por hacer)
+  async save(objet) {
+    let productLength = await this.getAll();
+    if (productLength.length > 0) {
+      try {
+        let products = await this.getAll();
+        let newLastItem = products[products.length - 1].id + 1;
+        objet.id = newLastItem;
+        objet.timestamp = Date.now();
+        products.push(objet);
+        await fs.writeFile(this.ruta, JSON.stringify(products));
+        return objet.id;
+      } catch (error) {
+        throw new Error('Error al guardar en Save');
+      }
+    } else {
+      objet.id = 1;
+      objet.timestamp = Date.now();
+      let newProduct = [];
+      newProduct.push(objet);
+      try {
+        await fs.writeFile(this.ruta, JSON.stringify(newProduct));
+        return objet.id;
+      } catch (error) {
+        throw new Error('Error al guardar en Save');
+      }
     }
   }
 
   async getAll() {
     try {
-      const productos = await fs.readFile(
-        './' + this.nombreArchivo + '.txt',
-        'utf8'
-      );
-      return JSON.parse(productos);
+      let products = await fs.readFile(this.ruta, 'utf-8');
+      return JSON.parse(products);
     } catch (error) {
-      console.log('error en GetAll');
+      return [];
     }
+  }
+
+  async getById(id) {
+    const products = await this.getAll();
+    let foundById = products.find((product) => product.id == id);
+    return foundById;
   }
 
   async deleteById(id) {
-    try {
-      const producto = await this.getAll();
-      const productsById = producto.filter((p) => p.id != id);
-      await fs.writeFile(
-        './' + this.nombreArchivo + '.txt',
-        JSON.stringify(productsById)
-      );
-    } catch (error) {
-      console.log('error en deleteById');
-    }
+    let products = await this.getAll();
+    let productToDelete = products.findIndex((product) => product.id === id);
+    products.splice(productToDelete, 1);
+    await fs.writeFile(this.ruta, JSON.stringify(products));
   }
 
   async deleteAll() {
-    array = [];
-    const productos = await fs.writeFile(
-      './' + this.nombreArchivo + '.txt',
-      JSON.stringify(array)
-    );
+    await fs.unlink(this.ruta);
+  }
+
+  async actualizar(item, id) {
+    const element = await this.getAll();
+    let productToUpdate = element.findIndex((p) => p.id === id);
+    element[productToUpdate] = item;
+
+    await fs.writeFile(this.ruta, JSON.stringify(element));
   }
 }
 
-export default ContenedorArchivo;
+module.exports = ContenedorArchivo;
