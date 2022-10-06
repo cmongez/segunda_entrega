@@ -12,10 +12,10 @@
   "author": "mongez",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^7.5.0",
     "dotenv": "^16.0.2",
     "express": "^4.17.1",
     "express-handlebars": "^5.2.0",
-    "faker": "^6.6.6",
     "firebase-admin": "^11.0.1",
     "knex": "^2.3.0",
     "mongodb": "^4.10.0",
